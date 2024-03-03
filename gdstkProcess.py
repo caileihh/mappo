@@ -204,9 +204,9 @@ def read_gds2(all_port, rate, num, f, gds_path):
 
 def read_gds(all_port, rate, num, f, gds_path):
     cell_name = [gds_path.replace(".gds", "")]  # 要处理的单元格的名称
-    units = gdstk.gds_units("gds/" + gds_path)
+    # units = gdstk.gds_units("gds/" + gds_path)
     # # 读取GDS文件
-    library = gdstk.read_gds("gds/" + gds_path, unit=1e-9)
+    library = gdstk.read_gds(os.path.dirname(os.path.abspath(__file__))+"\\"+"gds\\" + gds_path, unit=1e-9)
     # 查找要修改位置的单元格
     cell = None
     for lib_cell in library.cells:
@@ -249,7 +249,7 @@ def read_gds(all_port, rate, num, f, gds_path):
 
 def read_file():
     # 指定文件夹路径
-    folder_path = './gds'
+    folder_path = os.path.dirname(os.path.abspath(__file__)) + '\\gds'
 
     # 使用os.listdir()列出文件夹下的所有文件和子文件夹
     file_list = os.listdir(folder_path)
@@ -261,7 +261,7 @@ def read_file():
 
 
 def read_pin():
-    f1 = open(readNetlist.pre_name+'.pin', 'r', encoding="utf-8")
+    f1 = open(os.path.dirname(os.path.abspath(__file__))+"\\"+readNetlist.pre_name+'.pin', 'r', encoding="utf-8")
     f1.readline()
     line = f1.readline()
     all_port = {}

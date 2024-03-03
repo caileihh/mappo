@@ -1,3 +1,4 @@
+import os
 import re
 
 filename = 'netlist_3_27'
@@ -126,8 +127,8 @@ def read_netlist(sp_name, pre_name, num_name):
 
 def read_hspice(sp_name, pre_name, num_name):
     # sp_name = 'ota1.sp'
-    f = open(sp_name, 'r', encoding="utf-8")
-    f1 = open('connect.txt', 'w', encoding="utf-8")
+    f = open(os.path.dirname(os.path.abspath(__file__))+"\\"+sp_name, 'r', encoding="utf-8")
+    f1 = open(os.path.dirname(os.path.abspath(__file__))+"\\"+'connect.txt', 'w', encoding="utf-8")
     mostfetList = []
     net_list = []
     line = f.readline()
@@ -212,7 +213,7 @@ def read_hspice(sp_name, pre_name, num_name):
 
 
 def read_sym(sym_name):
-    f = open(sym_name, 'r', encoding="utf-8")
+    f = open(os.path.dirname(os.path.abspath(__file__))+"\\"+sym_name, 'r', encoding="utf-8")
     sym_list = {}
     line = f.readline()
     while line:

@@ -8,7 +8,7 @@ import cv2
 import ParticleTest_SYM as Par
 
 
-def calculate_sum_module_area(self, p):
+def calculate_sum_module_area(p):
     Area = 0
     for i in p:
         Area += i.getArea()
@@ -37,3 +37,4 @@ def main_init():
     input_path = ReadList[0][:ReadList[0].rfind("\\")]
     arg2 = "ModuleResult2.txt"
     sum_area = calculate_sum_module_area(Par.p)
+    return Module_sym, sum_area

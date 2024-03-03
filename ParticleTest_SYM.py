@@ -1494,36 +1494,36 @@ def SPIA(a, b, na, nb):
 
 
 def calOverlap(p1, p2):
-    # my_point1 = [MyPoint(p1.getShellX(i), p1.getShellY(i)) for i in range(p1.getPointNum())]
-    # my_point2 = [MyPoint(p2.getShellX(i), p2.getShellY(i)) for i in range(p2.getPointNum())]
-    # return abs(SPIA(my_point1, my_point2, len(my_point1), len(my_point2)))
+    my_point1 = [MyPoint(p1.getShellX(i), p1.getShellY(i)) for i in range(p1.getPointNum())]
+    my_point2 = [MyPoint(p2.getShellX(i), p2.getShellY(i)) for i in range(p2.getPointNum())]
+    return abs(SPIA(my_point1, my_point2, len(my_point1), len(my_point2)))
     # poly1 = Polygon((p1.getShellX(i), p1.getShellY(i)) for i in range(p1.getPointNum()))
     # poly2 = Polygon((p2.getShellX(i), p2.getShellY(i)) for i in range(p2.getPointNum()))
     # return Overlap(poly1, poly2)
-    return abs(example.calcularOverlap(p1.GETSHELLX(), p1.GETSHELLY(), p2.GETSHELLX(), p2.GETSHELLY(), p1.getPointNum(),
-                                       p2.getPointNum()))
+    # return abs(example.calcularOverlap(p1.GETSHELLX(), p1.GETSHELLY(), p2.GETSHELLX(), p2.GETSHELLY(), p1.getPointNum(),
+    #                                    p2.getPointNum()))
 
 
 def calOverlap2(p1, p2):
-    # my_point1 = [MyPoint(p1.getX(i), p1.getY(i)) for i in range(p1.getPointNum())]
-    # my_point2 = [MyPoint(p2.getX(i), p2.getY(i)) for i in range(p2.getPointNum())]
-    # return abs(SPIA(my_point1, my_point2, len(my_point1), len(my_point2)))
+    my_point1 = [MyPoint(p1.getX(i), p1.getY(i)) for i in range(p1.getPointNum())]
+    my_point2 = [MyPoint(p2.getX(i), p2.getY(i)) for i in range(p2.getPointNum())]
+    return abs(SPIA(my_point1, my_point2, len(my_point1), len(my_point2)))
     # poly1 = Polygon((p1.getX(i), p1.getY(i)) for i in range(p1.getPointNum()))
     # poly2 = Polygon((p2.getX(i), p2.getY(i)) for i in range(p2.getPointNum()))
     # return Overlap(poly1, poly2)
-    return abs(example.calcularOverlap(p1.GETX(), p1.GETY(), p2.GETX(), p2.GETY(), p1.getPointNum(), p2.getPointNum()))
+    # return abs(example.calcularOverlap(p1.GETX(), p1.GETY(), p2.GETX(), p2.GETY(), p1.getPointNum(), p2.getPointNum()))
 
 
 def calOverlap3(p1):
-    # my_point1 = [MyPoint(p1.getX(i), p1.getY(i)) for i in range(p1.getPointNum())]
-    # my_point2 = [MyPoint(AreaBoundary[i].get_x(), AreaBoundary[i].get_y()) for i in range(len(AreaBoundary))]
-    # return abs(SPIA(my_point1, my_point2, len(my_point1), len(my_point2)))
+    my_point1 = [MyPoint(p1.getX(i), p1.getY(i)) for i in range(p1.getPointNum())]
+    my_point2 = [MyPoint(AreaBoundary[i].get_x(), AreaBoundary[i].get_y()) for i in range(len(AreaBoundary))]
+    return abs(SPIA(my_point1, my_point2, len(my_point1), len(my_point2)))
     # poly1 = Polygon((p1.getX(i), p1.getY(i)) for i in range(p1.getPointNum()))
     # poly2 = Polygon((AreaBoundary[i].get_x(), AreaBoundary[i].get_y()) for i in range(len(AreaBoundary)))
     # return Overlap(poly1, poly2)
-    x_list = [AreaBoundary[i].get_x() for i in range(len(AreaBoundary))]
-    y_list = [AreaBoundary[i].get_y() for i in range(len(AreaBoundary))]
-    return abs(example.calcularOverlap(p1.GETX(), p1.GETY(), x_list, y_list, p1.getPointNum(), len(AreaBoundary)))
+    # x_list = [AreaBoundary[i].get_x() for i in range(len(AreaBoundary))]
+    # y_list = [AreaBoundary[i].get_y() for i in range(len(AreaBoundary))]
+    # return abs(example.calcularOverlap(p1.GETX(), p1.GETY(), x_list, y_list, p1.getPointNum(), len(AreaBoundary)))
 
 
 def Overlap(poly1, poly2):
