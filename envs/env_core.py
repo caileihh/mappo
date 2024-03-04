@@ -25,7 +25,7 @@ class EnvCore(object):
         # self.action_dim = 5  # 设置智能体的动作维度，这里假定为一个五个维度的 # set the action dimension of agents, here set to a five-dimensional
 
         self.agent_num = Par.ModuleNum  # 设置智能体(小飞机)的个数，这里设置为两个 # set the number of agents(aircrafts), here set to two
-        self.obs_dim = len(self.observation(Par.p)) # 设置智能体的观测维度 # set the observation dimension of agents
+        self.obs_dim = len(self.observation(Par.p)[0]) # 设置智能体的观测维度 # set the observation dimension of agents
         self.action_dim = 2  # 设置智能体的动作维度，这里假定为一个五个维度的 # set the action dimension of agents, here set to a five-dimensional
 
     def calculate_sum_module_area(self, p):
@@ -71,6 +71,7 @@ class EnvCore(object):
             Par.judgeOutOfBounds(Par.p[i])
         return self.observation(Par.p)
 
+    # count_done = 0
     def step(self, actions):
         """
         # self.agent_num设定为2个智能体时，actions的输入为一个2纬的list，每个list里面为一个shape = (self.action_dim, )的动作数据
@@ -95,8 +96,8 @@ class EnvCore(object):
         sub_agent_done = []
         sub_agent_info = []
 
-        done_list = [0 for _ in range(Par.ModuleNum)]
-        global count_done, done_reward
+        done_list = [False for _ in range(Par.ModuleNum)]
+        # global count_done, done_reward
         reward = 0
         sym = 0
         Step_Length = 50
@@ -154,7 +155,7 @@ class EnvCore(object):
                                 ports[tempI].get_center_point())
         tempOverlap = 0
         over_num = 0
-        reward_list = [-1 for _ in range(Par.ModuleNum)]
+        reward_list = [[-1] for _ in range(Par.ModuleNum)]
         for k in range(Par.ModuleNum - 1):
             for i in range(k + 1, Par.ModuleNum):
                 temp = Par.calOverlap2(Par.p[i], Par.p[k])
@@ -173,16 +174,16 @@ class EnvCore(object):
             done = True
             reward += 0.1 * (self.sum_area - tempOverlap)
             for i in range(len(reward_list)):
-                reward_list[i] = 2
-        if tempOverlap == 0 or ((over_num) <= 1 and count_done < 10):
-            count_done += 1
+                reward_list[i][0] = 2
+        if tempOverlap == 0 or ((over_num) <= 1):
+            # count_done += 1
             reward += 100 * pow(2, 5 - over_num)
             if over_num == 0:
                 reward += 1000
             # print("low over_num and cound_done:", count_done)
             # print(reward)
             for i in range(len(reward_list)):
-                reward_list[i] = 300
+                reward_list[i][0] = 300
             for i in range(len(reward_list)):
                 done_list[i] = True
             done = True
@@ -192,13 +193,13 @@ class EnvCore(object):
             # print("0 Overlap!!")
             # print(reward)
             for i in range(len(reward_list)):
-                reward_list[i] = 300
+                reward_list[i][0] = 300
             for i in range(len(reward_list)):
                 done_list[i] = True
             done = True
         for i in range(Par.ModuleNum):
             sub_agent_info.append({})
 
-        return [sub_agent_obs, np.array(reward_list), done_list, sub_agent_info]
+        return [sub_agent_obs, reward_list, done_list, sub_agent_info]
 
 

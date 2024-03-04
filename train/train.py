@@ -151,7 +151,9 @@ def main(args):
     # env init
     envs = make_train_env(all_args)
     eval_envs = make_eval_env(all_args) if all_args.use_eval else None
-    num_agents = all_args.num_agents
+    # num_agents = all_args.num_agents
+    import ParticleTest_SYM as Par
+    num_agents = Par.ModuleNum
 
     config = {
         "all_args": all_args,

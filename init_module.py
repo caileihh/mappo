@@ -1,3 +1,5 @@
+import os
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -19,9 +21,9 @@ def main_init():
     file_number = "16-10005"
     ModuleNum = 16
     ReadList = [
-        "./ModuleGDS.txt",
-        "./connect.txt",
-        "./ModuleResultPPO.txt"
+        os.path.dirname(os.path.abspath(__file__)) + "\\ModuleGDS.txt",
+        os.path.dirname(os.path.abspath(__file__)) + "\\connect.txt",
+        os.path.dirname(os.path.abspath(__file__)) + "\\ModuleResultPPO.txt"
     ]
     ModuleNum = 25
     import gdstkProcess
@@ -35,6 +37,6 @@ def main_init():
 
     print("Program is running! Please wait few minutes...")
     input_path = ReadList[0][:ReadList[0].rfind("\\")]
-    arg2 = "ModuleResult2.txt"
+    arg2 = os.path.dirname(os.path.abspath(__file__)) + "\\ModuleResult2.txt"
     sum_area = calculate_sum_module_area(Par.p)
     return Module_sym, sum_area
