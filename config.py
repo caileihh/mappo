@@ -444,7 +444,7 @@ def get_config():
     parser.add_argument(
         "--use_eval",
         action="store_true",
-        default=False,
+        default=True,
         help="by default, do not start evaluation. If set`, start evaluation alongside with training.",
     )
     parser.add_argument(

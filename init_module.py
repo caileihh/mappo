@@ -8,6 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 import cv2
 import ParticleTest_SYM as Par
+import copy
 
 
 def calculate_sum_module_area(p):
@@ -39,4 +40,13 @@ def main_init():
     input_path = ReadList[0][:ReadList[0].rfind("\\")]
     arg2 = os.path.dirname(os.path.abspath(__file__)) + "\\ModuleResult2.txt"
     sum_area = calculate_sum_module_area(Par.p)
-    return Module_sym, sum_area
+    return Module_sym, sum_area, copy.deepcopy(Par.p)
+
+def write_result():
+    ReadList = [
+        os.path.dirname(os.path.abspath(__file__)) + "\\ModuleGDS.txt",
+        os.path.dirname(os.path.abspath(__file__)) + "\\connect.txt",
+        os.path.dirname(os.path.abspath(__file__)) + "\\ModuleResultPPO.txt"
+    ]
+    arg2 = os.path.dirname(os.path.abspath(__file__)) + "\\ModuleResult2.txt"
+    Par.output_result_txt_file(Par.transition(ReadList[0]), arg2)

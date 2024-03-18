@@ -1,5 +1,7 @@
 import time
 import os
+
+import imageio
 import numpy as np
 from itertools import chain
 import torch
@@ -273,7 +275,8 @@ class EnvRunner(Runner):
                         np.eye(self.eval_envs.action_space[agent_id].n)[eval_action], 1
                     )
                 else:
-                    raise NotImplementedError
+                    eval_action_env = eval_action
+                    # raise NotImplementedError
 
                 eval_temp_actions_env.append(eval_action_env)
                 eval_rnn_states[:, agent_id] = _t2n(eval_rnn_state)
@@ -306,6 +309,7 @@ class EnvRunner(Runner):
             print("eval average episode rewards of agent%i: " % agent_id + str(eval_average_episode_rewards))
 
         self.log_train(eval_train_infos, total_num_steps)
+        # self.eval_envs.envs[0].env.write_result()
 
     @torch.no_grad()
     def render(self):
@@ -398,3 +402,4 @@ class EnvRunner(Runner):
                 all_frames,
                 duration=self.all_args.ifi,
             )
+

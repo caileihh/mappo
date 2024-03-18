@@ -449,7 +449,7 @@ def add_cell_with_references(layout, file_name, cell_name, x_offset, y_offset, r
 
     add_reference(new_cell, (x_offset, y_offset), rotate_angle)
 
-rate = 20   # 40
+rate = 60   # 40
 
 
 def main():

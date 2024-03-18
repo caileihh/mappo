@@ -13,19 +13,20 @@ import cv2
 import ParticleTest_SYM as Par
 import init_module
 
+
 class EnvCore(object):
     """
     # 环境中的智能体
     """
 
     def __init__(self):
-        self.Module_sym, self.sum_area = init_module.main_init()
+        self.Module_sym, self.sum_area, self.p = init_module.main_init()
         # self.agent_num = 2 # 设置智能体(小飞机)的个数，这里设置为两个 # set the number of agents(aircrafts), here set to two
         # self.obs_dim = 14  # 设置智能体的观测维度 # set the observation dimension of agents
         # self.action_dim = 5  # 设置智能体的动作维度，这里假定为一个五个维度的 # set the action dimension of agents, here set to a five-dimensional
 
         self.agent_num = Par.ModuleNum  # 设置智能体(小飞机)的个数，这里设置为两个 # set the number of agents(aircrafts), here set to two
-        self.obs_dim = len(self.observation(Par.p)[0]) # 设置智能体的观测维度 # set the observation dimension of agents
+        self.obs_dim = len(self.observation(self.p)[0])  # 设置智能体的观测维度 # set the observation dimension of agents
         self.action_dim = 2  # 设置智能体的动作维度，这里假定为一个五个维度的 # set the action dimension of agents, here set to a five-dimensional
 
     def calculate_sum_module_area(self, p):
@@ -44,7 +45,7 @@ class EnvCore(object):
             for k in range(Par.ModuleNum):
                 if i == k:
                     continue
-                temp = Par.calOverlap2(Par.p[n], Par.p[k])
+                temp = Par.calOverlap2(self.p[n], self.p[k])
                 tempOverlap += temp
             sym = math.sqrt(
                 pow(i.getCenterPoint().getX() - Par.sym_center, 2) + pow(i.getCenterPoint().getY() - Par.sym_center, 2))
@@ -67,9 +68,12 @@ class EnvCore(object):
         # return sub_agent_obs
 
         for i in range(Par.ModuleNum):
-            Par.p[i].Move2(Par.AreaMaxX * random.random(), Par.AreaMaxY * random.random())
-            Par.judgeOutOfBounds(Par.p[i])
-        return self.observation(Par.p)
+            self.p[i].Move2(Par.AreaMaxX * random.random(), Par.AreaMaxY * random.random())
+            Par.judgeOutOfBounds(self.p[i])
+        return self.observation(self.p)
+
+    def write_result(self):
+        init_module.write_result()
 
     # count_done = 0
     def step(self, actions):
@@ -91,7 +95,7 @@ class EnvCore(object):
         #
         # return [sub_agent_obs, sub_agent_reward, sub_agent_done, sub_agent_info]
 
-        sub_agent_obs = self.observation(Par.p)
+        sub_agent_obs = self.observation(self.p)
         sub_agent_reward = []
         sub_agent_done = []
         sub_agent_info = []
@@ -113,55 +117,58 @@ class EnvCore(object):
                     temp_index = [index for index in module_sym if index != int(i / 2) + 1]
                     index_sym = temp_index[0]
                 if index_sym != -2 and index_sym != -1:
-                    if Par.p[int(i / 2)].getCenterPoint().getY() != Par.p[index_sym - 1].getCenterPoint().getY():
-                        Par.p[index_sym - 1].Move2(Par.p[index_sym - 1].getCenterPoint().getX(),
-                                                   Par.p[int(i / 2)].getCenterPoint().getY())
-                    if Par.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center != Par.p[
+                    if self.p[int(i / 2)].getCenterPoint().getY() != self.p[index_sym - 1].getCenterPoint().getY():
+                        self.p[index_sym - 1].Move2(self.p[index_sym - 1].getCenterPoint().getX(),
+                                                    self.p[int(i / 2)].getCenterPoint().getY())
+                    if self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center != self.p[
                         index_sym - 1].getCenterPoint().getX() - Par.sym_center:
-                        Par.p[index_sym - 1].Move(
-                            2 * Par.sym_center - Par.p[int(i / 2)].getCenterPoint().getX() - Par.p[
+                        self.p[index_sym - 1].Move(
+                            2 * Par.sym_center - self.p[int(i / 2)].getCenterPoint().getX() - self.p[
                                 index_sym - 1].getCenterPoint().getX(),
                             0)
-                    Par.p[int(i / 2)].Move(Step_Length * (action[i]), Step_Length * (action[i + 1]))
-                    Par.p[index_sym - 1].Move(- Step_Length * (action[i]), Step_Length * (action[i + 1]))
-                    if Par.judgeOutOfBounds(Par.p[int(i / 2)]):
+                    self.p[int(i / 2)].Move(Step_Length * (action[i]), Step_Length * (action[i + 1]))
+                    self.p[index_sym - 1].Move(- Step_Length * (action[i]), Step_Length * (action[i + 1]))
+                    if Par.judgeOutOfBounds(self.p[int(i / 2)]):
                         reward -= 100
-                    Par.judgeOutOfBounds(Par.p[index_sym - 1])
-                    sym += math.sqrt(pow(Par.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
-                        Par.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
+                    Par.judgeOutOfBounds(self.p[index_sym - 1])
+                    sym += math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
+                        self.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
                 elif index_sym == -1:
-                    Par.p[int(i / 2)].Move(0, Step_Length * (action[i + 1] + action[i]))
-                    if Par.judgeOutOfBounds(Par.p[int(i / 2)]):
+                    self.p[int(i / 2)].Move(0, Step_Length * (action[i + 1] + action[i]))
+                    if Par.judgeOutOfBounds(self.p[int(i / 2)]):
                         reward -= 100
-                    sym += math.sqrt(pow(Par.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
-                        Par.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
+                    sym += math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
+                        self.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
                 else:
-                    Par.p[int(i / 2)].Move(Step_Length * (action[i]), Step_Length * (action[i + 1]))
-                    if Par.judgeOutOfBounds(Par.p[int(i / 2)]):
+                    self.p[int(i / 2)].Move(Step_Length * (action[i]), Step_Length * (action[i + 1]))
+                    if Par.judgeOutOfBounds(self.p[int(i / 2)]):
                         reward -= 100
-                    sym += math.sqrt(pow(Par.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
-                        Par.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
+                    sym += math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
+                        self.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
 
         tempDis = 0
         for i in range(Par.ModuleNum):
             for ports in Par.LinkSET:
                 for tempJ in range(len(ports)):
-                    if ports[tempJ] in Par.p[i].portsArrayList:
+                    if ports[tempJ] in self.p[i].portsArrayList:
                         for tempI in range(len(ports)):
                             if tempI == tempJ:
                                 continue
                             tempDis += Par.getDist(
-                                Par.p[i].portsArrayList[Par.p[i].portsArrayList.index(ports[tempJ])].get_center_point(),
+                                self.p[i].portsArrayList[
+                                    self.p[i].portsArrayList.index(ports[tempJ])].get_center_point(),
                                 ports[tempI].get_center_point())
         tempOverlap = 0
         over_num = 0
         reward_list = [[-1] for _ in range(Par.ModuleNum)]
         for k in range(Par.ModuleNum - 1):
             for i in range(k + 1, Par.ModuleNum):
-                temp = Par.calOverlap2(Par.p[i], Par.p[k])
+                temp = Par.calOverlap2(self.p[i], self.p[k])
                 tempOverlap += temp
                 if temp != 0:
                     over_num += 1
+                    reward_list[k][0] = -50
+                    reward_list[i][0] = -50
         done = False
         reward -= tempOverlap * 0.01
         reward -= sym * 0.01
@@ -183,23 +190,22 @@ class EnvCore(object):
             # print("low over_num and cound_done:", count_done)
             # print(reward)
             for i in range(len(reward_list)):
-                reward_list[i][0] = 300
-            for i in range(len(reward_list)):
-                done_list[i] = True
+                reward_list[i][0] = 2
+            # for i in range(len(reward_list)):
+            #     done_list[i] = True
             done = True
-            Par.output_result_txt_file(Par.transition("./ModuleGDS.txt"), "ModuleResult2.txt")
+
         if tempOverlap == 0:
             reward += 100 * Par.ModuleNum
-            # print("0 Overlap!!")
+            print("0 Overlap!!")
             # print(reward)
             for i in range(len(reward_list)):
                 reward_list[i][0] = 300
             for i in range(len(reward_list)):
                 done_list[i] = True
             done = True
+            # Par.output_result_txt_file(Par.transition("./ModuleGDS.txt"), "ModuleResult2.txt")
         for i in range(Par.ModuleNum):
             sub_agent_info.append({})
 
         return [sub_agent_obs, reward_list, done_list, sub_agent_info]
-
-

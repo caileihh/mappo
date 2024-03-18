@@ -86,6 +86,7 @@ class Runner(object):
             self.policy.append(po)
 
         if self.model_dir is not None:
+            print("restoring from model_dir!!!")
             self.restore()
 
         self.trainer = []

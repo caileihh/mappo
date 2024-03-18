@@ -234,13 +234,13 @@ def read_gds():
     print()
 
 
-pre_name = "COMPARATOR_PRE_AMP_2018_Modify_test_flow" ################################
+pre_name = "Core_test_flow" ################################
 
 
 def main():
     import gdstkProcess
     num_name = gdstkProcess.main()
-    read_hspice("comp.sp", pre_name, num_name) ###################################
+    read_hspice("ota1.sp", pre_name, num_name) ###################################
     return read_sym(pre_name + ".sym")
     # read_gds()
 
