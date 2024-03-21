@@ -96,15 +96,16 @@ class EnvCore(object):
         # return [sub_agent_obs, sub_agent_reward, sub_agent_done, sub_agent_info]
 
         sub_agent_obs = self.observation(self.p)
-        sub_agent_reward = []
+        # sub_agent_reward = []
         sub_agent_done = []
         sub_agent_info = []
-
+        reward_list = [[-1] for _ in range(Par.ModuleNum)]
         done_list = [False for _ in range(Par.ModuleNum)]
         # global count_done, done_reward
         reward = 0
         sym = 0
         Step_Length = 50
+        sym_list = [-1.1 for _ in range(Par.ModuleNum)]
 
         action = []
         for i in actions:
@@ -131,20 +132,26 @@ class EnvCore(object):
                     if Par.judgeOutOfBounds(self.p[int(i / 2)]):
                         reward -= 100
                     Par.judgeOutOfBounds(self.p[index_sym - 1])
-                    sym += math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
+                    temp_sym = math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
                         self.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
+                    sym += temp_sym
+                    sym_list[int(i / 2)] = temp_sym * 0.05
                 elif index_sym == -1:
                     self.p[int(i / 2)].Move(0, Step_Length * (action[i + 1] + action[i]))
                     if Par.judgeOutOfBounds(self.p[int(i / 2)]):
                         reward -= 100
-                    sym += math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
+                    temp_sym = math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
                         self.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
+                    sym += temp_sym
+                    sym_list[int(i / 2)] = temp_sym * 0.05
                 else:
                     self.p[int(i / 2)].Move(Step_Length * (action[i]), Step_Length * (action[i + 1]))
                     if Par.judgeOutOfBounds(self.p[int(i / 2)]):
                         reward -= 100
-                    sym += math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
+                    temp_sym = math.sqrt(pow(self.p[int(i / 2)].getCenterPoint().getX() - Par.sym_center, 2) + pow(
                         self.p[int(i / 2)].getCenterPoint().getY() - Par.sym_center, 2))
+                    sym += temp_sym
+                    sym_list[int(i / 2)] = temp_sym * 0.05
 
         tempDis = 0
         for i in range(Par.ModuleNum):
@@ -160,15 +167,15 @@ class EnvCore(object):
                                 ports[tempI].get_center_point())
         tempOverlap = 0
         over_num = 0
-        reward_list = [[-1] for _ in range(Par.ModuleNum)]
+
         for k in range(Par.ModuleNum - 1):
             for i in range(k + 1, Par.ModuleNum):
                 temp = Par.calOverlap2(self.p[i], self.p[k])
                 tempOverlap += temp
                 if temp != 0:
                     over_num += 1
-                    reward_list[k][0] = -50
-                    reward_list[i][0] = -50
+                    reward_list[k][0] -= temp * 0.1
+                    reward_list[i][0] -= temp * 0.1
         done = False
         reward -= tempOverlap * 0.01
         reward -= sym * 0.01
@@ -207,5 +214,16 @@ class EnvCore(object):
             # Par.output_result_txt_file(Par.transition("./ModuleGDS.txt"), "ModuleResult2.txt")
         for i in range(Par.ModuleNum):
             sub_agent_info.append({})
+        # max_x = max_y = -1e10
+        # min_x = min_y = 1e10
+        # for i in range(Par.ModuleNum):
+        #     min_x = min(self.p[i].getMinX(), min_x)
+        #     min_y = min(self.p[i].getMinY(), min_y)
+        #     max_x = max(self.p[i].getMaxX(), max_x)
+        #     max_y = max(self.p[i].getMaxY(), max_y)
+        for i in range(len(reward_list)):
+            reward_list[i][0] -= sym_list[i]
+
+
 
         return [sub_agent_obs, reward_list, done_list, sub_agent_info]
