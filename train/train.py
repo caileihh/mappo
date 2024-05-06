@@ -34,7 +34,7 @@ def make_train_env(all_args):
 
             from envs.env_continuous import ContinuousActionEnv
 
-            env = ContinuousActionEnv()
+            env = ContinuousActionEnv(all_args.dataset)
 
             # from envs.env_discrete import DiscreteActionEnv
 
@@ -55,7 +55,7 @@ def make_eval_env(all_args):
             # TODO Important, here you can choose continuous or discrete action space by uncommenting the above two lines or the below two lines.
             from envs.env_continuous import ContinuousActionEnv
 
-            env = ContinuousActionEnv()
+            env = ContinuousActionEnv(all_args.dataset)
             # from envs.env_discrete import DiscreteActionEnv
             # env = DiscreteActionEnv()
             env.seed(all_args.seed + rank * 1000)
@@ -63,13 +63,15 @@ def make_eval_env(all_args):
 
         return init_env
 
-    return DummyVecEnv([get_env_fn(i) for i in range(all_args.n_rollout_threads)])
+    return DummyVecEnv([get_env_fn(i) for i in range(all_args.n_eval_rollout_threads)])
+    # return DummyVecEnv([get_env_fn(i) for i in range(1)])
 
 
 def parse_args(args, parser):
     parser.add_argument("--scenario_name", type=str, default="MyEnv", help="Which scenario to run on")
     parser.add_argument("--num_landmarks", type=int, default=3)
     parser.add_argument("--num_agents", type=int, default=2, help="number of players")
+    parser.add_argument("--dataset", type=int, default=1, help="0:MAGICAL 1:Emprean")
 
     all_args = parser.parse_known_args(args)[0]
 
@@ -152,9 +154,14 @@ def main(args):
     envs = make_train_env(all_args)
     eval_envs = make_eval_env(all_args) if all_args.use_eval else None
     # num_agents = all_args.num_agents
-    import ParticleTest_SYM as Par
-    num_agents = Par.ModuleNum
+    if all_args.dataset == 0:
+        import ParticleTest_SYM as Par
+        num_agents = Par.ModuleNum
+    else:
+        import ParticleTest as Par
+        num_agents = Par.ModuleNum
 
+    all_args.use_eval = False
     config = {
         "all_args": all_args,
         "envs": envs,
@@ -259,8 +266,12 @@ def my_test(args, run_num):
     envs = make_train_env(all_args)
     eval_envs = make_eval_env(all_args) if all_args.use_eval else None
     # num_agents = all_args.num_agents
-    import ParticleTest_SYM as Par
-    num_agents = Par.ModuleNum
+    if all_args.dataset == 0:
+        import ParticleTest_SYM as Par
+        num_agents = Par.ModuleNum
+    else:
+        import ParticleTest as Par
+        num_agents = Par.ModuleNum
 
     config = {
         "all_args": all_args,
@@ -291,4 +302,4 @@ def my_test(args, run_num):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-    # my_test(sys.argv[1:], run_num=47)
+    # my_test(sys.argv[1:], run_num=66)

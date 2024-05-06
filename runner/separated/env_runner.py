@@ -88,10 +88,10 @@ class EnvRunner(Runner):
                 # if self.env_name == "MPE":
                 for agent_id in range(self.num_agents):
                     idv_rews = []
-                    for info in infos:
-                        if "individual_reward" in info[agent_id].keys():
-                            idv_rews.append(info[agent_id]["individual_reward"])
-                    train_infos[agent_id].update({"individual_rewards": np.mean(idv_rews)})
+                    # for info in infos:
+                    #     if "individual_reward" in info[agent_id].keys():
+                    #         idv_rews.append(info[agent_id]["individual_reward"])
+                    # train_infos[agent_id].update({"individual_rewards": np.mean(idv_rews)})
                     train_infos[agent_id].update(
                         {
                             "average_episode_rewards": np.mean(self.buffer[agent_id].rewards)
@@ -309,7 +309,8 @@ class EnvRunner(Runner):
             print("eval average episode rewards of agent%i: " % agent_id + str(eval_average_episode_rewards))
 
         self.log_train(eval_train_infos, total_num_steps)
-        # self.eval_envs.envs[0].env.write_result()
+        self.eval_envs.envs[0].env.legalization()
+        self.eval_envs.envs[0].env.write_result()
 
     @torch.no_grad()
     def render(self):

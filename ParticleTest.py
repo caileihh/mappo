@@ -814,6 +814,35 @@ def transition2(ModulePath):
             result_list.append(str_builder)
     return result_list
 
+def transition3(ModulePath, particle):
+    global AreaBoundary, ModuleNum, fileNumber, p, v, pBest, allBest
+    global bestF, bestOverlap, eps, MaxStepLength, MinStepLength
+    global allSumUp, bestSumOverlap, allSum, shellWidth
+    global AreaMaxX, AreaMinX, AreaMaxY, AreaMinY, random, c1, c2
+    global disRate, overlapRate, maxScore, AreaUtiRate, LinkSET, MName
+    tempList = read_file(ModulePath)
+    result_list = []
+    for i in range(2):
+        result_list.append(tempList[i].strip())
+    for i in range(ModuleNum):
+        str_builder = "Module:" + particle[i].getName()
+        result_list.append(str_builder)
+
+        str_builder = "Boundary:"
+        for j in range(particle[i].getPointNum()):
+            str_builder += "(" + format(particle[i].getX(j), ".1f") + ", " + format(particle[i].getY(j), ".1f") + ")"
+        str_builder += ";" + particle[i].getRuleName()
+        result_list.append(str_builder)
+
+        for j in range(len(particle[i].portsArrayList)):
+            str_builder = "Port:"
+            for k in range(particle[i].portsArrayList[j].get_port_point_num()):
+                str_builder += "(" + format(particle[i].portsArrayList[j].get_x(k), ".1f") + ", " + format(
+                    particle[i].portsArrayList[j].get_y(k), ".1f") + ")"
+            str_builder += ";" + particle[i].portsArrayList[j].get_rule_name()
+            result_list.append(str_builder)
+    return result_list
+
 
 def output_result_txt_file(result_list, filepath):
     try:

@@ -1,7 +1,7 @@
 import gym
 from gym import spaces
 import numpy as np
-from envs.env_core import EnvCore
+from envs.env_core import EnvCore, EnvCore_Emprean
 
 
 class ContinuousActionEnv(object):
@@ -10,8 +10,11 @@ class ContinuousActionEnv(object):
     Wrapper for continuous action environment.
     """
 
-    def __init__(self):
-        self.env = EnvCore()
+    def __init__(self, dataset):
+        if dataset == 0:
+            self.env = EnvCore()
+        else:
+            self.env = EnvCore_Emprean()
         self.num_agent = self.env.agent_num
 
         self.signal_obs_dim = self.env.obs_dim
