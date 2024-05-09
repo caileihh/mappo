@@ -301,5 +301,5 @@ def my_test(args, run_num):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
-    # my_test(sys.argv[1:], run_num=66)
+    # main(sys.argv[1:])
+    my_test(sys.argv[1:], run_num=71)

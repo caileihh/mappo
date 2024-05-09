@@ -235,10 +235,11 @@ class EnvCore_Emprean(object):
     """
 
     def __init__(self):
-        self.sum_area, self.p = init_module_Emprean.main_init()
+        self.sum_area, self.p, self.LinkSET = init_module_Emprean.main_init()
         self.agent_num = Par2.ModuleNum  # 设置智能体(小飞机)的个数，这里设置为两个 # set the number of agents(aircrafts), here set to two
         self.obs_dim = len(self.observation(self.p)[0])  # 设置智能体的观测维度 # set the observation dimension of agents
         self.action_dim = 2  # 设置智能体的动作维度，这里假定为一个五个维度的 # set the action dimension of agents, here set to a five-dimensional
+        self.cal_wl()
 
     def calculate_sum_module_area(self, p):
         Area = 0
@@ -284,6 +285,23 @@ class EnvCore_Emprean(object):
 
     def write_result(self):
         init_module_Emprean.write_result(self.p)
+
+    def cal_wl(self):
+        tempDis = 0
+        for i in range(self.agent_num):
+            now_dis = 0
+            for ports in self.LinkSET:
+                for tempJ in range(len(ports)):
+                    if ports[tempJ] in self.p[i].portsArrayList:
+                        for tempI in range(len(ports)):
+                            if tempI == tempJ:
+                                continue
+                            now_dis += Par2.getDist(
+                                self.p[i].portsArrayList[
+                                    self.p[i].portsArrayList.index(ports[tempJ])].get_center_point(),
+                                ports[tempI].get_center_point())
+            tempDis += now_dis
+        print("wl:", tempDis)
 
     # count_done = 0
     def step(self, actions):
@@ -355,7 +373,7 @@ class EnvCore_Emprean(object):
             reward_list[i][0] -= sym_list[i]
 
             now_dis = 0
-            for ports in Par2.LinkSET:
+            for ports in self.LinkSET:
                 for tempJ in range(len(ports)):
                     if ports[tempJ] in self.p[i].portsArrayList:
                         for tempI in range(len(ports)):
@@ -366,7 +384,7 @@ class EnvCore_Emprean(object):
                                     self.p[i].portsArrayList.index(ports[tempJ])].get_center_point(),
                                 ports[tempI].get_center_point())
             tempDis += now_dis
-            reward_list[i][0] -= now_dis * 0.3
+            reward_list[i][0] -= now_dis * 0.1
             sub_agent_info.append({})
 
         return [sub_agent_obs, reward_list, done_list, sub_agent_info]

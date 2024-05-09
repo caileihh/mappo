@@ -311,6 +311,7 @@ class EnvRunner(Runner):
         self.log_train(eval_train_infos, total_num_steps)
         self.eval_envs.envs[0].env.legalization()
         self.eval_envs.envs[0].env.write_result()
+        self.eval_envs.envs[0].env.cal_wl()
 
     @torch.no_grad()
     def render(self):
